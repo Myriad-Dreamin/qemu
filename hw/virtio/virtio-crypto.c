@@ -17,6 +17,7 @@
 #include "qemu/module.h"
 #include "qapi/error.h"
 #include "qemu/error-report.h"
+#include "trace.h"
 
 #include "hw/virtio/virtio.h"
 #include "hw/virtio/virtio-crypto.h"
@@ -130,7 +131,7 @@ virtio_crypto_create_sym_session(VirtIOCrypto *vcrypto,
             }
             /* get auth key */
             if (info.auth_key_len > 0) {
-                DPRINTF("auth_keylen=%" PRIu32 "\n", info.auth_key_len);
+                trace_virtio_crypto_get_auth_key(info.auth_key_len);
                 info.auth_key = g_malloc(info.auth_key_len);
                 s = iov_to_buf(iov, out_num, 0, info.auth_key,
                                info.auth_key_len);
