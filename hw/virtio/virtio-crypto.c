@@ -191,7 +191,7 @@ virtio_crypto_handle_close_session(VirtIOCrypto *vcrypto,
     Error *local_err = NULL;
 
     session_id = ldq_le_p(&close_sess_req->session_id);
-    DPRINTF("close session, id=%" PRIu64 "\n", session_id);
+    trace_virtio_crypto_handle_close_session(session_id);
 
     ret = cryptodev_backend_sym_close_session(
               vcrypto->cryptodev, session_id, queue_id, &local_err);
@@ -472,7 +472,8 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
     op_info->len_to_cipher = len_to_cipher;
     /* Handle the initilization vector */
     if (op_info->iv_len > 0) {
-        DPRINTF("iv_len=%" PRIu32 "\n", op_info->iv_len);
+        trace_virtio_crypto_sym_op_helper_iv_len(op_info->iv_len);
+
         op_info->iv = op_info->data + curr_size;
 
         s = iov_to_buf(iov, out_num, 0, op_info->iv, op_info->iv_len);
@@ -486,7 +487,7 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
 
     /* Handle additional authentication data if exists */
     if (op_info->aad_len > 0) {
-        DPRINTF("aad_len=%" PRIu32 "\n", op_info->aad_len);
+        virtio_crypto_sym_op_helper_aad_len(op_info->aad_len);
         op_info->aad_data = op_info->data + curr_size;
 
         s = iov_to_buf(iov, out_num, 0, op_info->aad_data, op_info->aad_len);
