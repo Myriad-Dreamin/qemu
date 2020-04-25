@@ -504,7 +504,7 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
 
     /* Handle the source data */
     if (op_info->src_len > 0) {
-        trace_virtio_crypto_get_src_len(op_info->src_len);
+        trace_virtio_crypto_sym_op_helper_src_len(op_info->src_len);
         op_info->src = op_info->data + curr_size;
 
         s = iov_to_buf(iov, out_num, 0, op_info->src, op_info->src_len);
@@ -521,11 +521,11 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
     op_info->dst = op_info->data + curr_size;
     curr_size += op_info->dst_len;
 
-    trace_virtio_crypto_get_dst_len(op_info->dst_len);
+    trace_virtio_crypto_sym_op_helper_dst_len(op_info->dst_len);
 
     /* Handle the hash digest result */
     if (hash_result_len > 0) {
-        trace_virtio_crypto_get_hash_result_len(hash_result_len);
+        trace_virtio_crypto_sym_op_helper_hash_result_len(hash_result_len);
         op_info->digest_result = op_info->data + curr_size;
     }
 
