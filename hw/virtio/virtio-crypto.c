@@ -25,6 +25,8 @@
 #include "standard-headers/linux/virtio_ids.h"
 #include "sysemu/cryptodev-vhost.h"
 
+#include "trace.h"
+
 #define VIRTIO_CRYPTO_VM_VERSION 1
 
 /*
@@ -49,7 +51,7 @@ virtio_crypto_cipher_session_helper(VirtIODevice *vdev,
     info->cipher_alg = ldl_le_p(&cipher_para->algo);
     info->key_len = ldl_le_p(&cipher_para->keylen);
     info->direction = ldl_le_p(&cipher_para->op);             
-    trace_virtio_crypto_cipher_alg_and_direction(info->cipher_alg, info->direction);
+    trace_virtio_crypto_cipher_session_helper_cipher_alg_and_direction(info->cipher_alg, info->direction);
 
     if (info->key_len > vcrypto->conf.max_cipher_key_len) {
         error_report("virtio-crypto length of cipher key is too big: %u",
@@ -59,7 +61,7 @@ virtio_crypto_cipher_session_helper(VirtIODevice *vdev,
     /* Get cipher key */
     if (info->key_len > 0) {
         size_t s;
-        trace_virtio_crypto_keylen(info->key_len);
+        trace_virtio_crypto_cipher_session_helper_keylen(info->key_len);
 
         info->cipher_key = g_malloc(info->key_len);
         s = iov_to_buf(*iov, num, 0, info->cipher_key, info->key_len);
@@ -129,7 +131,7 @@ virtio_crypto_create_sym_session(VirtIOCrypto *vcrypto,
             }
             /* get auth key */
             if (info.auth_key_len > 0) {
-                trace_virtio_crypto_auth_keylen(info.auth_key_len);
+                trace_virtio_crypto_create_sym_session_auth_keylen(info.auth_key_len);
 
                 info.auth_key = g_malloc(info.auth_key_len);
                 s = iov_to_buf(iov, out_num, 0, info.auth_key,
@@ -165,7 +167,7 @@ virtio_crypto_create_sym_session(VirtIOCrypto *vcrypto,
                                      vcrypto->cryptodev,
                                      &info, queue_index, &local_err);
     if (session_id >= 0) {
-        trace_virtio_crypto_create_session_id(session_id);
+        trace_virtio_crypto_create_sym_session_session_id(session_id);
         ret = session_id;
     } else {
         if (local_err) {
@@ -502,7 +504,7 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
 
     /* Handle the source data */
     if (op_info->src_len > 0) {
-        DPRINTF("src_len=%" PRIu32 "\n", op_info->src_len);
+        trace_virtio_crypto_get_src_len(op_info->src_len);
         op_info->src = op_info->data + curr_size;
 
         s = iov_to_buf(iov, out_num, 0, op_info->src, op_info->src_len);
@@ -519,11 +521,11 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
     op_info->dst = op_info->data + curr_size;
     curr_size += op_info->dst_len;
 
-    DPRINTF("dst_len=%" PRIu32 "\n", op_info->dst_len);
+    trace_virtio_crypto_get_dst_len(op_info->dst_len);
 
     /* Handle the hash digest result */
     if (hash_result_len > 0) {
-        DPRINTF("hash_result_len=%" PRIu32 "\n", hash_result_len);
+        trace_virtio_crypto_get_hash_result_len(hash_result_len);
         op_info->digest_result = op_info->data + curr_size;
     }
 
