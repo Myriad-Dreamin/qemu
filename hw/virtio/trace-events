@@ -78,7 +78,7 @@ virtio_iommu_report_fault(uint8_t reason, uint32_t flags, uint32_t endpoint, uin
 virtio_crypto_cipher_session_helper_cipher_alg_and_direction(uint32_t cipher_alg, uint8_t direction) "cipher_alg=%" PRIu32 ", info->direction=%" PRIu32 
 virtio_crypto_cipher_session_helper_keylen(uint32_t keylen) "keylen=%" PRIu32
 virtio_crypto_create_sym_session_auth_keylen(uint32_t auth_keylen) "auth_keylen=%" PRIu32
-virtio_crypto_create_sym_session_session_id(int64 session_id) "create session_id=%" PRIu64 " successfully"
+virtio_crypto_create_sym_session_session_id(int64_t session_id) "create session_id=%" PRIu64 " successfully"
 virtio_crypto_get_src_len(uint32_t src_len) "src_len=%" PRIu32
 virtio_crypto_get_dst_len(uint32_t dst_len) "dst_len=%" PRIu32
 virtio_crypto_get_hash_result_len(uint32_t hash_result_len) "hash_result_len=%" PRIu32
