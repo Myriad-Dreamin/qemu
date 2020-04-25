@@ -25,6 +25,8 @@
 #include "standard-headers/linux/virtio_ids.h"
 #include "sysemu/cryptodev-vhost.h"
 
+#include "trace.h"
+
 #define VIRTIO_CRYPTO_VM_VERSION 1
 
 /*
@@ -501,7 +503,7 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
 
     /* Handle the source data */
     if (op_info->src_len > 0) {
-        DPRINTF("src_len=%" PRIu32 "\n", op_info->src_len);
+        trace_virtio_crypto_get_src_len(op_info->src_len);
         op_info->src = op_info->data + curr_size;
 
         s = iov_to_buf(iov, out_num, 0, op_info->src, op_info->src_len);
@@ -518,11 +520,11 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
     op_info->dst = op_info->data + curr_size;
     curr_size += op_info->dst_len;
 
-    DPRINTF("dst_len=%" PRIu32 "\n", op_info->dst_len);
+    trace_virtio_crypto_get_dst_len(op_info->dst_len);
 
     /* Handle the hash digest result */
     if (hash_result_len > 0) {
-        DPRINTF("hash_result_len=%" PRIu32 "\n", hash_result_len);
+        trace_virtio_crypto_get_hash_result_len(hash_result_len);
         op_info->digest_result = op_info->data + curr_size;
     }
 
