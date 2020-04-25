@@ -489,7 +489,7 @@ virtio_crypto_sym_op_helper(VirtIODevice *vdev,
 
     /* Handle additional authentication data if exists */
     if (op_info->aad_len > 0) {
-        virtio_crypto_sym_op_helper_aad_len(op_info->aad_len);
+        trace_virtio_crypto_sym_op_helper_aad_len(op_info->aad_len);
         op_info->aad_data = op_info->data + curr_size;
 
         s = iov_to_buf(iov, out_num, 0, op_info->aad_data, op_info->aad_len);
